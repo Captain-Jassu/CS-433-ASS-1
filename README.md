@@ -6,7 +6,7 @@ Change the directories of the client and server terminal to the downlaoded direc
 
 Run 'python client.py' and 'python server.py' command in both terminals.
 
-Input to client is taken from client terminal, and also the mode of encryption is choosen by the client .\
+Input to client is taken from client terminal, and also the mode of encryption is choosen by the client.
 
 mode = '1'/'2'/'3'
 
