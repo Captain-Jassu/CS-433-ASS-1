@@ -7,8 +7,17 @@ def encrypt(str, mode):
     if(mode=='1'):
         new_str = str
     elif(mode=='2'):
+        offset=2
         for i in str:
-            new_str+= chr(ord(i)+2)
+            if(48<=ord(i) and ord(i)<=57):
+                new_str += chr((ord(i)+offset-48)%10 + 48)
+            elif(65<=ord(i) and ord(i)<=90):
+                new_str += chr((ord(i)+offset-65)%26 + 65)
+            elif(97<=ord(i) and ord(i)<=122):
+                new_str += chr((ord(i)+offset-97)%26 + 97)
+            else:
+                new_str+=i
+    
     elif(mode=='3'):
         list = str.split(" ")
         for i in list:
@@ -22,8 +31,16 @@ def decrypt(str, mode):
     if(mode=='1'):
         new_str = str
     elif(mode=='2'):
+        offset=2
         for i in str:
-            new_str+= chr(ord(i)-2)
+            if(48<=ord(i) and ord(i)<=57):
+                new_str += chr((ord(i)-offset-48+10)%10 + 48)
+            elif(65<=ord(i) and ord(i)<=90):
+                new_str += chr((ord(i)-offset-65+26)%26 + 65)
+            elif(97<=ord(i) and ord(i)<=122):
+                new_str += chr((ord(i)-offset-97+26)%26 + 97)
+            else:
+                new_str+=i
     elif(mode=='3'):
         list = str.split(" ")
         for i in list:
@@ -90,20 +107,27 @@ while True:
         file_path = args[1]
         file_name = os.path.basename(file_path)
 
-        file = open(file_path,'r')
-        data = file.read()
-        en_data = encrypt(data,mode)
-        file.close()
+        try:
+            file = open(file_path,'r')
+            data = file.read()
+            en_data = encrypt(data,mode)
+            file.close()
+        except:
+            en_data = encrypt("NOK",mode)
+
         connec.send(en_data.encode())
+        
 
     elif(args[0]=="upd"):
         file_path = args[1]
         file_name = os.path.basename(file_path)
 
-        new_file = open(file_name,'w')
         en_data = connec.recv(SIZE).decode()
         data = decrypt(en_data,mode)
-        new_file.write(data)
-        new_file.close()
+        
+        if(data!="NOK"):
+            new_file = open(file_name,'w')
+            new_file.write(data)
+            new_file.close()
 
 server.close()
